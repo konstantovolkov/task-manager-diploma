@@ -1,14 +1,8 @@
 import { useState, ChangeEvent, FormEvent } from 'react';
+import { IFormState } from '../types/IFormState';
+import { IFormSubmitAction } from '../types/IFormSubmitAction';
 
-interface IFormState {
-  [inputName: string]: string | number;
-}
-
-interface IFormStateHandler {
-  (formState: IFormState): void;
-}
-
-export const useForm = (formSubmitHandler: IFormStateHandler) => {
+export const useForm = (formSubmitHandler: IFormSubmitAction) => {
   const [inputs, setInputs] = useState<IFormState>({});
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {

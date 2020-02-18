@@ -1,4 +1,5 @@
 import { FormType, IconType, InputType } from './enums';
+import { IFormSubmitAction } from './IFormSubmitAction';
 
 interface IInputConfig {
   key: number;
@@ -10,5 +11,6 @@ interface IInputConfig {
 
 interface IFormConfig {
   inputs: IInputConfig[];
+  submitAction: IFormSubmitAction;
 }
 export type TFormTypesRecord = Record<FormType, IFormConfig>;

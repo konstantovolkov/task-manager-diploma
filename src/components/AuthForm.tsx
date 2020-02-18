@@ -13,9 +13,7 @@ import { IAuthFormProps } from '../types/IAuthFormProps';
 export const AuthForm: React.FC<IAuthFormProps> = ({ formConfig }) => {
   const [formType, setFormType] = useState<FormType>(FormType.LOGIN);
   const { inputs, handleSubmit, handleInputChange, reset } = useForm(
-    formData => {
-      alert(Object.entries(formData));
-    }
+    formConfig[formType].submitAction
   );
 
   const onToggle = (e: ChangeEvent<HTMLInputElement>) => {

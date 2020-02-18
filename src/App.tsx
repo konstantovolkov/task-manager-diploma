@@ -20,8 +20,12 @@ const formConfig: TFormTypesRecord = {
         name: 'password',
         icon: IconType.PASSWORD
       }
-    ]
-  },
+    ],
+    submitAction: (inputData: IFormState) => {
+      alert(`User signed in:
+        Username: ${inputData.name}
+        Password: ${inputData.password}`);
+    },
   'New account': {
     inputs: [
       {
@@ -45,7 +49,13 @@ const formConfig: TFormTypesRecord = {
         name: 'password',
         icon: IconType.PASSWORD
       }
-    ]
+    ],
+    submitAction: (inputData: IFormState) => {
+      alert(`User registered:
+        Username: ${inputData.name}
+        Email: ${inputData.email}
+        Password: ${inputData.password}`);
+    },
   }
 };
 

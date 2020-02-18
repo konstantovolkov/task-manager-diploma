@@ -12,5 +12,6 @@ interface IInputConfig {
 interface IFormConfig {
   inputs: IInputConfig[];
   submitAction: IFormSubmitAction;
+  submitButtonText: string;
 }
 export type TFormTypesRecord = Record<FormType, IFormConfig>;

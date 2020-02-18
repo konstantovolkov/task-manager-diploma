@@ -9,6 +9,7 @@ import { useForm } from '../hooks/useForm';
 
 import { FormType } from '../types/enums';
 import { IAuthFormProps } from '../types/IAuthFormProps';
+import { SubmitButton } from './SubmitButton';
 
 export const AuthForm: React.FC<IAuthFormProps> = ({ formConfig }) => {
   const [formType, setFormType] = useState<FormType>(FormType.LOGIN);
@@ -41,7 +42,7 @@ export const AuthForm: React.FC<IAuthFormProps> = ({ formConfig }) => {
             </InputField>
           );
         })}
-        <button type="submit">{formType}</button>
+        <SubmitButton>{formConfig[formType].submitButtonText}</SubmitButton>
       </FormContainer>
     </StyledForm>
   );

@@ -29,6 +29,5 @@ export const InputContainer = styled.div`
     font-family: Segoe UI, Frutiger, Frutiger Linotype, Dejavu Sans,
       Helvetica Neue, Arial, sans-serif;
     font-size: 13px;
-    color: #c7c9c9;
   }
 `;

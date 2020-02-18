@@ -2,6 +2,7 @@ import React from 'react';
 import { AuthForm } from './components/AuthForm';
 import { IconType, InputType } from './types/enums';
 import { TFormTypesRecord } from './types/TFormTypesRecord';
+import { IFormState } from './types/IFormState';
 
 const formConfig: TFormTypesRecord = {
   'Sign in': {
@@ -9,14 +10,14 @@ const formConfig: TFormTypesRecord = {
       {
         key: 1,
         type: InputType.TEXT,
-        placeholder: 'Your usernamе',
+        placeholder: 'Usernamе',
         name: 'username',
         icon: IconType.USER
       },
       {
         key: 2,
         type: InputType.PASSWORD,
-        placeholder: 'Your password',
+        placeholder: 'Password',
         name: 'password',
         icon: IconType.PASSWORD
       }
@@ -26,26 +27,28 @@ const formConfig: TFormTypesRecord = {
         Username: ${inputData.name}
         Password: ${inputData.password}`);
     },
+    submitButtonText: 'Sign in'
+  },
   'New account': {
     inputs: [
       {
         key: 1,
         type: InputType.TEXT,
-        placeholder: 'Your username',
+        placeholder: 'Username',
         name: 'username',
         icon: IconType.USER
       },
       {
         key: 2,
         type: InputType.EMAIL,
-        placeholder: 'Your e-mail',
+        placeholder: 'E-mail',
         name: 'email',
         icon: IconType.EMAIL
       },
       {
         key: 3,
         type: InputType.PASSWORD,
-        placeholder: 'Your password',
+        placeholder: 'Password',
         name: 'password',
         icon: IconType.PASSWORD
       }
@@ -56,6 +59,7 @@ const formConfig: TFormTypesRecord = {
         Email: ${inputData.email}
         Password: ${inputData.password}`);
     },
+    submitButtonText: 'Create account'
   }
 };
 

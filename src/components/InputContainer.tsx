@@ -20,6 +20,22 @@ export const InputContainer = styled.div`
     top: 50%;
   }
 
+  & span {
+    position: absolute;
+    right: ${getAlignment(13)};
+    transform: translateY(-50%);
+    top: 50%;
+    cursor: pointer;
+
+    &::before {
+      content: ' ';
+      border-style: solid;
+      border-width: 0 0 0 1px;
+      border-color: #c7c9c9;
+      padding-right: ${getAlignment(13)};
+    }
+  }
+
   & input {
     height: -webkit-fill-available;
     border: #c7c9c9 solid 1px;

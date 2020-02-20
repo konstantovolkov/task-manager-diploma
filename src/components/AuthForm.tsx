@@ -3,13 +3,17 @@ import React, { useState, ChangeEvent } from 'react';
 import { InputField } from './InputField';
 import { FormTypeToggler } from './FormTypeToggler';
 import { StyledForm } from './StyledForm';
-import { FormContainer } from './FormContainer';
+import { FormContainer, formIconColor } from './FormContainer';
 import { Icon } from './Icon';
+import { withHideButton } from '../hocs/withHideButton';
 import { useForm } from '../hooks/useForm';
 
-import { FormType } from '../types/enums';
+import { FormType, InputType } from '../types/enums';
 import { IAuthFormProps } from '../types/IAuthFormProps';
 import { SubmitButton } from './SubmitButton';
+import { IFieldProps } from '../types/IFieldProps';
+
+const HideableInputField = withHideButton(InputField)
 
 export const AuthForm: React.FC<IAuthFormProps> = ({ formConfig }) => {
   const [formType, setFormType] = useState<FormType>(FormType.LOGIN);
@@ -27,19 +31,29 @@ export const AuthForm: React.FC<IAuthFormProps> = ({ formConfig }) => {
       <FormTypeToggler onToggle={onToggle} currentFormType={formType} />
       <FormContainer>
         {formConfig[formType].inputs.map(inputConfig => {
+          const RenderInput = inputConfig.type === InputType.PASSWORD ?
+            HideableInputField :
+            InputField;
+
+          const inputProps: IFieldProps & { key: any } = {
+            key: `${inputConfig.key}.${formType}`,
+            name: inputConfig.name,
+            placeholder: inputConfig.placeholder,
+            type: inputConfig.type,
+            onChange: handleInputChange,
+            value: inputs[inputConfig.name],
+            icon: 
+              inputConfig.icon ? (
+                <Icon
+                  size={16}
+                  icon={inputConfig.icon}
+                  color={formIconColor}
+                />
+              ) : null
+          }
+
           return (
-            <InputField
-              key={`${inputConfig.key}.${formType}`}
-              name={inputConfig.name}
-              placeholder={inputConfig.placeholder}
-              type={inputConfig.type}
-              onChange={handleInputChange}
-              value={inputs[inputConfig.name]}
-            >
-              {inputConfig.icon ? (
-                <Icon size={16} icon={inputConfig.icon} color="#c7c9c9" />
-              ) : null}
-            </InputField>
+            <RenderInput {...inputProps} />
           );
         })}
         <SubmitButton>{formConfig[formType].submitButtonText}</SubmitButton>
@@ -47,3 +61,4 @@ export const AuthForm: React.FC<IAuthFormProps> = ({ formConfig }) => {
     </StyledForm>
   );
 };
+

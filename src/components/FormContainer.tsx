@@ -6,3 +6,5 @@ export const FormContainer = styled.div`
   row-gap: 20px;
   margin: 20px;
 `;
+
+export const formIconColor = '#c7c9c9';

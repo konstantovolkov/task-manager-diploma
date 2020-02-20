@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { InputContainer } from './InputContainer';
 import { IFieldProps } from '../types/IFieldProps';
 
@@ -8,18 +8,25 @@ export const InputField: React.FC<IFieldProps> = ({
   placeholder,
   onChange,
   value,
+  icon,
   children
 }) => {
+  const input = useRef<HTMLInputElement>(null);
+
   return (
-    <InputContainer withIcon={!!children}>
+    <InputContainer withIcon={!!icon}>
       <input
         name={name}
         placeholder={placeholder}
         type={type}
         onChange={onChange}
         value={value}
+        ref={input}
       />
-      {children}
+      <>
+        {icon}
+        {children}
+      </>
     </InputContainer>
   );
 };

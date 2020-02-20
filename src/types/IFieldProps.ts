@@ -6,5 +6,6 @@ export interface IFieldProps {
   placeholder: string;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
   value: string | number;
-  children?: React.ReactNode;
+  icon?: React.ReactNode;
+  children?: any;
 }

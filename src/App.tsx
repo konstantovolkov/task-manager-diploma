@@ -24,7 +24,7 @@ const formConfig: TFormTypesRecord = {
     ],
     submitAction: (inputData: IFormState) => {
       alert(`User signed in:
-        Username: ${inputData.name}
+        Username: ${inputData.username}
         Password: ${inputData.password}`);
     },
     submitButtonText: 'Sign in'
@@ -55,7 +55,7 @@ const formConfig: TFormTypesRecord = {
     ],
     submitAction: (inputData: IFormState) => {
       alert(`User registered:
-        Username: ${inputData.name}
+        Username: ${inputData.username}
         Email: ${inputData.email}
         Password: ${inputData.password}`);
     },

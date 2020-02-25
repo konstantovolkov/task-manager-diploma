@@ -1,5 +1,5 @@
 import React from 'react';
-import { AuthForm } from './components/AuthForm';
+import { AuthForm } from './components/AuthForm/AuthForm';
 import { IconType, InputType } from './types/enums';
 import { TFormTypesRecord } from './types/TFormTypesRecord';
 import { IFormState } from './types/IFormState';

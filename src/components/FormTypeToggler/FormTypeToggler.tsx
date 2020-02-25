@@ -1,8 +1,8 @@
 import React from 'react';
-import { FormType } from '../types/enums';
+import { FormType } from '../../types/enums';
 import { StyledFormToggler } from './StyledFormToggler';
 import { StyledInputToggler } from './StyledInputToggler';
-import { IFormTypeTogglerProps } from '../types/IFormTypeTogglerProps';
+import { IFormTypeTogglerProps } from '../../types/IFormTypeTogglerProps';
 
 export const FormTypeToggler: React.FC<IFormTypeTogglerProps> = ({
   onToggle,

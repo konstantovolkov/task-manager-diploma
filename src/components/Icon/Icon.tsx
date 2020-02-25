@@ -1,6 +1,6 @@
 import React from 'react';
-import { ICONS } from '../icons/icons';
-import { IIconProps } from '../types/IIconProps';
+import { ICONS } from '../../icons/icons';
+import { IIconProps } from '../../types/IIconProps';
 
 export const Icon: React.FC<IIconProps> = ({ icon, size, color }) => {
   const styles = {

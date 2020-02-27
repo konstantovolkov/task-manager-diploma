@@ -17,8 +17,9 @@ const HideableInputField = withHideButton(InputField);
 
 export const AuthForm: React.FC<IAuthFormProps> = ({ formConfig }) => {
   const [formType, setFormType] = useState<FormType>(FormType.LOGIN);
-  const { inputs, handleSubmit, handleInputChange, reset } = useForm(
-    formConfig[formType].submitAction
+  const { inputs, errors, handleSubmit, handleInputChange, reset } = useForm(
+    formConfig[formType].submitAction,
+    formConfig.validators
   );
 
   const onToggle = (e: ChangeEvent<HTMLInputElement>) => {
@@ -37,18 +38,23 @@ export const AuthForm: React.FC<IAuthFormProps> = ({ formConfig }) => {
               : InputField;
 
           const inputProps: IFieldProps & { key: any } = {
-            key: `${inputConfig.key}.${formType}`,
+            key: inputConfig.name,
             name: inputConfig.name,
             placeholder: inputConfig.placeholder,
             type: inputConfig.type,
             onChange: handleInputChange,
-            value: inputs[inputConfig.name],
+            value: inputs[inputConfig.name] || '',
             icon: inputConfig.icon ? (
               <Icon size={16} icon={inputConfig.icon} color={formIconColor} />
             ) : null
           };
 
-          return <RenderInput {...inputProps} />;
+          return (
+            <>
+              <RenderInput {...inputProps} />
+              <div>{errors[inputConfig.name]}</div>
+            </>
+          );
         })}
         <SubmitButton>{formConfig[formType].submitButtonText}</SubmitButton>
       </FormContainer>

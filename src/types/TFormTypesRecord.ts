@@ -9,20 +9,17 @@ interface IInputConfig {
 }
 
 export interface IValidator {
-  [inputName: string]: {
+  [inputName: string]: Array<{
     isValid: (value: string) => boolean;
-    message: string
-  }
-}
-
-interface IValidatorsConfig {
-  validators: IValidator
+    errorMessage: string;
+  }>;
 }
 
 interface IFormConfig {
   inputs: IInputConfig[];
   submitAction: IFormSubmitAction;
   submitButtonText: string;
+  validators?: IValidator;
 }
 
-export type TFormTypesRecord = Record<FormType, IFormConfig> & IValidatorsConfig;
+export type TFormTypesRecord = Record<FormType, IFormConfig>;

@@ -12,6 +12,8 @@ export const InputContainer = styled.div`
   justify-content: stretch;
   align-items: stretch;
   position: relative;
+  font-family: Segoe UI, Frutiger, Frutiger Linotype, Dejavu Sans,
+    Helvetica Neue, Arial, sans-serif;
 
   & svg {
     position: absolute;
@@ -42,8 +44,6 @@ export const InputContainer = styled.div`
     border-radius: 3px;
     outline: none;
     padding-left: ${getAlignment(35, 10)};
-    font-family: Segoe UI, Frutiger, Frutiger Linotype, Dejavu Sans,
-      Helvetica Neue, Arial, sans-serif;
     font-size: 13px;
   }
 `;

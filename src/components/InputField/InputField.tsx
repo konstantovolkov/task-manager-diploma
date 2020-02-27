@@ -1,6 +1,7 @@
 import React from 'react';
 import { InputContainer } from './InputContainer';
 import { IFieldProps } from '../../types/IFieldProps';
+import { InputAlert } from './InputAlert';
 
 export const InputField: React.FC<IFieldProps> = ({
   type,
@@ -9,6 +10,7 @@ export const InputField: React.FC<IFieldProps> = ({
   onChange,
   value,
   icon,
+  errorMessage,
   children
 }) => {
   return (
@@ -19,11 +21,11 @@ export const InputField: React.FC<IFieldProps> = ({
         type={type}
         onChange={onChange}
         value={value}
+        onInvalid={e => e.preventDefault()}
       />
-      <>
-        {icon}
-        {children}
-      </>
+      {icon}
+      {children}
+      <InputAlert>{errorMessage}</InputAlert>
     </InputContainer>
   );
 };

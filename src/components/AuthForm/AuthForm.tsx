@@ -16,15 +16,15 @@ import { IFieldProps } from '../../types/IFieldProps';
 const HideableInputField = withHideButton(InputField);
 
 export const AuthForm: React.FC<IAuthFormProps> = ({ formConfig }) => {
-  const [formType, setFormType] = useState<FormType>(FormType.LOGIN);
+  const [formType, setFormType] = useState<FormType>(FormType.REGISTER);
   const { inputs, errors, handleSubmit, handleInputChange, reset } = useForm(
+    formConfig[formType].inputs.map(input => input.name),
     formConfig[formType].submitAction,
-    formConfig.validators
+    formConfig[formType].validators
   );
 
   const onToggle = (e: ChangeEvent<HTMLInputElement>) => {
     setFormType(e.target.value as FormType);
-    reset();
   };
 
   return (
@@ -46,15 +46,11 @@ export const AuthForm: React.FC<IAuthFormProps> = ({ formConfig }) => {
             value: inputs[inputConfig.name] || '',
             icon: inputConfig.icon ? (
               <Icon size={16} icon={inputConfig.icon} color={formIconColor} />
-            ) : null
+            ) : null,
+            errorMessage: errors[inputConfig.name]
           };
 
-          return (
-            <>
-              <RenderInput {...inputProps} />
-              <div>{errors[inputConfig.name]}</div>
-            </>
-          );
+          return <RenderInput {...inputProps} />;
         })}
         <SubmitButton>{formConfig[formType].submitButtonText}</SubmitButton>
       </FormContainer>

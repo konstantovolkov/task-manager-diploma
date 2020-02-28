@@ -25,6 +25,7 @@ export const AuthForm: React.FC<IAuthFormProps> = ({ formConfig }) => {
 
   const onToggle = (e: ChangeEvent<HTMLInputElement>) => {
     setFormType(e.target.value as FormType);
+    reset();
   };
 
   return (

@@ -28,7 +28,21 @@ const formConfig: TFormTypesRecord = {
         Username: ${inputData.username}
         Password: ${inputData.password}`);
     },
-    submitButtonText: 'Sign in'
+    submitButtonText: 'Sign in',
+    validators: {
+      password: [
+        {
+          isValid: check(value => value.length > 0),
+          errorMessage: 'Password is required'
+        }
+      ],
+      username: [
+        {
+          isValid: check(value => value.length > 0),
+          errorMessage: 'Username is required'
+        }
+      ]
+    }
   },
   'New account': {
     inputs: [

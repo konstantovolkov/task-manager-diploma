@@ -9,9 +9,6 @@ import { IFormState } from '../types/IFormState';
 import { IFormSubmitAction } from '../types/IFormSubmitAction';
 import { IValidator } from '../types/TFormTypesRecord';
 
-//вернуть объект ошибок с ключом - именем поля
-// если ошибки есть - аутентификации не происходит
-
 export const useForm = (
   inputNames: string[],
   formSubmitHandler: IFormSubmitAction,
@@ -41,21 +38,30 @@ export const useForm = (
     },
     [validatorsConfig]
   );
-  const [inputs, setInputs] = useState<IFormState>(
-    Object.assign({}, ...inputNames.map(inputName => ({ [inputName]: '' })))
-  );
+  const [inputs, setInputs] = useState<IFormState>({});
   const [errors, setErrors] = useState<{ [inputName: string]: string }>({});
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [submit, setSubmit] = useState<boolean>(false);
 
   useEffect(() => {
     setErrors(getErrors(inputs));
   }, [inputs, getErrors]);
 
+  useEffect(() => {
+    if (!Object.keys(errors).length && submit) {
+      formSubmitHandler(inputs);
+    }
+    setSubmit(false);
+  }, [errors])
+
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    setIsSubmitting(true);
-    formSubmitHandler(inputs);
+    setInputs(inputs => ({
+      ...inputs,
+      ...Object.assign({}, ...inputNames.filter(inputName => !inputs[inputName]).map(inputName => ({ [inputName]: '' })))
+    }));
+    setSubmit(true);
   };
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {

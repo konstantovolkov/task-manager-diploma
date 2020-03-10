@@ -1,0 +1,32 @@
+{
+  "name": "node-server-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "client-install": "cd client && npm install",
+    "server": "nodemon src/server.ts",
+    "client": "npm run start --prefix client ",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.epam.com/Konstantin_Volkov/Konstantin_Volkov_Inner_Group.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.3",
+    "@types/node": "^13.9.0",
+    "concurrently": "^5.1.0",
+    "nodemon": "^2.0.2",
+    "prettier": "^1.19.1",
+    "ts-node": "^8.6.2",
+    "typescript": "^3.8.3"
+  }
+}

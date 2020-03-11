@@ -2,10 +2,10 @@
   "name": "node-server-app",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "client-install": "cd client && npm install",
-    "server": "nodemon src/server.ts",
+    "server": "nodemon src/app.ts",
+    "debug": "nodemon --inspect src/app.ts",
     "client": "npm run start --prefix client ",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },

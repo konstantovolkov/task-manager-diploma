@@ -22,39 +22,40 @@ const users: IUser[] = [
     email: 'richdrew@mail.com',
     userType: 'mentor'
   }
-]
+];
 
 const byId = (stored: IUsers, current: IUser) => ({
-  ...stored, [current.id] : current
-})
+  ...stored,
+  [current.id]: current
+});
 
-const usersRepository: IUsers = users.reduce(byId, {})
+const usersRepository: IUsers = users.reduce(byId, {});
 
 export const findAll = async (): Promise<IUsers> => {
   return usersRepository;
-}
+};
 
 export const findById = async (id: number): Promise<IUser> => {
   const user = usersRepository[id];
-  
+
   if (user) {
-    return user
+    return user;
   }
 
-  throw new Error("User not found");
-}
+  throw new Error('User not found');
+};
 
 export const create = async (newUser: IUser): Promise<void> => {
-  const id = Math.max(...Object.keys(usersRepository).map(id => Number.parseInt(id)));
+  const id =
+    Math.max(...Object.keys(usersRepository).map(id => Number.parseInt(id))) +
+    1;
 
+  console.log(newUser);
   usersRepository[id] = {
     ...newUser,
     id
-  }
-
-  console.log(newUser);
-  console.log(1)
-}
+  };
+};
 
 export const update = async (updatedUser: IUser): Promise<void> => {
   if (usersRepository[updatedUser.id]) {
@@ -62,16 +63,16 @@ export const update = async (updatedUser: IUser): Promise<void> => {
     return;
   }
 
-  throw new Error("User not found")
-}
+  throw new Error('User not found');
+};
 
 export const remove = async (id: number): Promise<void> => {
-  const user: IUser = usersRepository[id]
+  const user: IUser = usersRepository[id];
 
   if (user) {
     delete usersRepository[id];
     return;
   }
 
-  throw new Error("User not found")
-}
+  throw new Error('User not found');
+};

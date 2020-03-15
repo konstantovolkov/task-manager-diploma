@@ -1,0 +1,12 @@
+{
+  "type": "postgres",
+  "host": "localhost",
+  "port": "5432",
+  "username": "konstantin_volkov",
+  "password": "1234",
+  "database": "konstantin_volkov",
+  "syncronize": true,
+  "entities": [
+    "./src/domains/**/*.model.ts"
+  ]
+}

@@ -1,78 +1,68 @@
-import { IUser, IUsers } from './User.interface';
+import { User } from "./User.model";
+import { getRepository, Repository } from "typeorm";
 
-const users: IUser[] = [
-  {
-    id: 1,
-    firstName: 'Andrew',
-    lastName: 'Ivanov',
-    email: 'andrewivanov@mail.com',
-    userType: 'student'
-  },
-  {
-    id: 2,
-    firstName: 'Bob',
-    lastName: 'Smith',
-    email: 'bobsmith@mail.com',
-    userType: 'student'
-  },
-  {
-    id: 3,
-    firstName: 'Richard',
-    lastName: 'Drew',
-    email: 'richdrew@mail.com',
-    userType: 'mentor'
-  }
-];
+export class UserService {
+  public async getById(id: number): Promise<User> {
+    const user = await getRepository(User).findOne(id);
 
-const byId = (stored: IUsers, current: IUser) => ({
-  ...stored,
-  [current.id]: current
-});
+    if (user) {
+      return user;
+    }
 
-const usersRepository: IUsers = users.reduce(byId, {});
-
-export const findAll = async (): Promise<IUsers> => {
-  return usersRepository;
-};
-
-export const findById = async (id: number): Promise<IUser> => {
-  const user = usersRepository[id];
-
-  if (user) {
-    return user;
+    throw new Error("User not found");
   }
 
-  throw new Error('User not found');
-};
+  public async getList(): Promise<User[]> {
+    const user = await getRepository(User).find();
 
-export const create = async (newUser: IUser): Promise<void> => {
-  const id =
-    Math.max(...Object.keys(usersRepository).map(id => Number.parseInt(id))) +
-    1;
+    if (user) {
+      return user;
+    }
 
-  console.log(newUser);
-  usersRepository[id] = {
-    ...newUser,
-    id
-  };
-};
-
-export const update = async (updatedUser: IUser): Promise<void> => {
-  if (usersRepository[updatedUser.id]) {
-    usersRepository[updatedUser.id] = updatedUser;
-    return;
+    throw new Error("Users not found");
   }
 
-  throw new Error('User not found');
-};
+  public async create({ email, firstName, lastName, userType }: User): Promise<User> {
+    const userRepository = getRepository(User);
 
-export const remove = async (id: number): Promise<void> => {
-  const user: IUser = usersRepository[id];
+    const newUser = new User();
+    newUser.email = email;
+    newUser.firstName = firstName;
+    newUser.lastName = lastName;
+    newUser.userType = userType;
 
-  if (user) {
-    delete usersRepository[id];
-    return;
+    return await userRepository.save(newUser);
   }
 
-  throw new Error('User not found');
-};
+  public async update(user: User): Promise<User> {
+    const userRepository = getRepository(User);
+
+    const oldUser = await userRepository.findOne(user.id);
+    if (oldUser) {
+      const { firstName, lastName, email, userType } = oldUser
+      const updatedUser = new User();
+
+      updatedUser.firstName = firstName;
+      updatedUser.lastName = lastName;
+      updatedUser.email = email;
+      updatedUser.userType = userType
+
+      return await userRepository.save(updatedUser)
+    }
+
+    throw new Error('User not found');
+  }
+
+  public async delete(id: number): Promise<void> {
+    const userRepository = getRepository(User)
+    const user = userRepository.findOne(id);
+
+    if (user) {
+      await userRepository.delete(id);
+    }
+
+    throw new Error('User not found');
+  }
+
+}
+

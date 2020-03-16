@@ -1,24 +1,25 @@
 import express, { Request, Response, RequestHandler } from 'express';
-import * as UserService from './User.service';
-import { IUser, IUsers } from './User.interface';
+import { UserService } from './User.service';
 import { RouteController } from '../Base/RouteController';
-import { INestedResourcesMap } from '../Base/INestedResourcesMap';
 
-export class UserController extends RouteController {
-  initRoutes() {
-    this.router.get('/', this.getAll);
-    this.router.get('/:id', this.getById);
-    this.router.post('/', this.create);
-    this.router.put('/', this.update);
-    this.router.delete('/:id', this.delete);
+export class UserController extends RouteController<UserService> {
+  init() {
+    this.service = new UserService();
+
+    this.router.get('/', this.getAll.bind(this));
+    this.router.get('/:id', this.getById.bind(this));
+    this.router.post('/', this.create.bind(this));
+    this.router.put('/', this.update.bind(this));
+    this.router.delete('/:id', this.delete.bind(this));
   }
 
   private async getAll(req: Request, res: Response) {
     try {
-      const users = await UserService.findAll();
+      const users = await this.service.getList();
 
       res.status(200).send(users);
     } catch (e) {
+      console.log(e);
       res.status(404).send(e.message);
     }
   }
@@ -27,7 +28,7 @@ export class UserController extends RouteController {
     const id = parseInt(req.params.id, 10);
 
     try {
-      const user = await UserService.findById(id);
+      const user = await this.service.getById(id);
 
       res.status(200).send(user);
     } catch (e) {
@@ -39,7 +40,7 @@ export class UserController extends RouteController {
     try {
       const newUser = req.body.user;
 
-      await UserService.create(newUser);
+      await this.service.create(newUser);
 
       res.sendStatus(201);
     } catch (e) {
@@ -51,7 +52,7 @@ export class UserController extends RouteController {
     try {
       const newUser = req.body.user;
 
-      await UserService.create(newUser);
+      await this.service.update(newUser);
 
       res.sendStatus(201);
     } catch (e) {
@@ -63,7 +64,7 @@ export class UserController extends RouteController {
     const id = parseInt(req.params.id, 10);
 
     try {
-      await UserService.remove(id);
+      await this.service.delete(id);
 
       res.sendStatus(200);
     } catch (e) {
@@ -71,64 +72,3 @@ export class UserController extends RouteController {
     }
   }
 }
-
-/*
-export const usersRouter = express.Router();
-
-usersRouter.get('/', async (req: Request, res: Response) => {
-  try {
-    const users = await UserService.findAll();
-
-    res.status(200).send(users);
-  } catch (e) {
-    res.status(404).send(e.message);
-  }
-});
-
-usersRouter.get('/:id', async (req: Request, res: Response) => {
-  const id = parseInt(req.params.id, 10);
-
-  try {
-    const user = await UserService.findById(id);
-
-    res.status(200).send(user);
-  } catch (e) {
-    res.status(404).send(e.message);
-  }
-});
-
-usersRouter.post('/', async (req: Request, res: Response) => {
-  try {
-    const newUser = req.body.user;
-
-    await UserService.create(newUser);
-
-    res.sendStatus(201);
-  } catch (e) {
-    res.status(404).send(e.message);
-  }
-});
-
-usersRouter.put('/', async (req: Request, res: Response) => {
-  try {
-    const updatedUser = req.body.user as IUser;
-
-    await UserService.update(updatedUser);
-
-    res.sendStatus(200);
-  } catch (e) {
-    res.status(404).send(e.message);
-  }
-});
-
-usersRouter.delete('/:id', async (req: Request, res: Response) => {
-  const id = parseInt(req.params.id, 10);
-
-  try {
-    await UserService.remove(id);
-
-    res.sendStatus(200);
-  } catch (e) {
-    res.status(404).send(e.message);
-  }
-});*/

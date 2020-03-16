@@ -1,7 +1,8 @@
-import { User } from "./User.model";
-import { getRepository, Repository } from "typeorm";
+import { User } from './User.model';
+import { getRepository, Repository } from 'typeorm';
+import { Service } from '../Base/Service';
 
-export class UserService {
+export class UserService implements Service<User> {
   public async getById(id: number): Promise<User> {
     const user = await getRepository(User).findOne(id);
 
@@ -9,20 +10,19 @@ export class UserService {
       return user;
     }
 
-    throw new Error("User not found");
+    throw new Error('User not found');
   }
 
   public async getList(): Promise<User[]> {
-    const user = await getRepository(User).find();
-
-    if (user) {
-      return user;
-    }
-
-    throw new Error("Users not found");
+    return await getRepository(User).find();
   }
 
-  public async create({ email, firstName, lastName, userType }: User): Promise<User> {
+  public async create({
+    email,
+    firstName,
+    lastName,
+    userType
+  }: User): Promise<User> {
     const userRepository = getRepository(User);
 
     const newUser = new User();
@@ -39,22 +39,22 @@ export class UserService {
 
     const oldUser = await userRepository.findOne(user.id);
     if (oldUser) {
-      const { firstName, lastName, email, userType } = oldUser
+      const { firstName, lastName, email, userType } = oldUser;
       const updatedUser = new User();
 
       updatedUser.firstName = firstName;
       updatedUser.lastName = lastName;
       updatedUser.email = email;
-      updatedUser.userType = userType
+      updatedUser.userType = userType;
 
-      return await userRepository.save(updatedUser)
+      return await userRepository.save(updatedUser);
     }
 
     throw new Error('User not found');
   }
 
   public async delete(id: number): Promise<void> {
-    const userRepository = getRepository(User)
+    const userRepository = getRepository(User);
     const user = userRepository.findOne(id);
 
     if (user) {
@@ -63,6 +63,4 @@ export class UserService {
 
     throw new Error('User not found');
   }
-
 }
-

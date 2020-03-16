@@ -1,12 +1,16 @@
 import { Router } from 'express';
 import { INestedResourcesMap } from './INestedResourcesMap';
+import { Service } from './Service';
+import { UserService } from '../User/User.service';
+import { User } from '../User/User.model';
 
-export abstract class RouteController {
+export abstract class RouteController<T extends Service<unknown>> {
   public readonly router: Router;
+  protected service: T;
 
   constructor(nestedResoucesMap?: INestedResourcesMap[]) {
     this.router = Router({ mergeParams: true });
-    this.initRoutes();
+    this.init();
     nestedResoucesMap?.forEach(this.setRouterToPath.bind(this));
   }
 
@@ -14,5 +18,5 @@ export abstract class RouteController {
     this.router.use(path, routeController.router);
   }
 
-  abstract initRoutes(): void;
+  abstract init(): void;
 }

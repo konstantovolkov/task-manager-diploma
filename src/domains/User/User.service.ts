@@ -23,15 +23,13 @@ export class UserService implements Service<User> {
     lastName,
     userType
   }: User): Promise<User> {
-    const userRepository = getRepository(User);
-
     const newUser = new User();
     newUser.email = email;
     newUser.firstName = firstName;
     newUser.lastName = lastName;
     newUser.userType = userType;
 
-    return await userRepository.save(newUser);
+    return await getRepository(User).save(newUser);
   }
 
   public async update(user: User): Promise<User> {

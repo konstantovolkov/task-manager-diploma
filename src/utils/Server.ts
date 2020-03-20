@@ -27,6 +27,9 @@ export class Server {
 
   private initErrorHandlers() {
     this.server.use(errorHandler);
+    this.server.use((err: any, res: any, req: any, next: any) => {
+      res.status(404).send(err.message);
+    })
     this.server.use(notFoundHandler);
   }
 

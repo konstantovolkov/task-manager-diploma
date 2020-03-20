@@ -1,74 +1,53 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, Handler } from 'express';
 import { UserService } from './User.service';
-import { RouteController } from '../Base/RouteController';
+import { RouteController, Controller, Get, Post, Put, Delete } from '../Base/RouteController';
 
+@Controller
 export class UserController extends RouteController<UserService> {
   init() {
     this.service = new UserService();
-
-    this.router.get('/', this.getAll.bind(this));
-    this.router.get('/:id', this.getById.bind(this));
-    this.router.post('/', this.create.bind(this));
-    this.router.put('/', this.update.bind(this));
-    this.router.delete('/:id', this.delete.bind(this));
   }
 
-  private async getAll(req: Request, res: Response) {
-    try {
-      const users = await this.service.getList();
+  @Get('/')
+  async getAll(req: Request, res: Response) {
+    const users = await this.service.getList();
 
-      res.status(200).send(users);
-    } catch (e) {
-      console.log(e);
-      res.status(404).send(e.message);
-    }
+    res.status(200).send(users);
   }
 
-  private async getById(req: Request, res: Response) {
+  @Get('/:id')
+  async getById(req: Request, res: Response) {
     const id = parseInt(req.params.id, 10);
 
-    try {
-      const user = await this.service.getById(id);
+    const user = await this.service.getById(id);
 
-      res.status(200).send(user);
-    } catch (e) {
-      res.status(404).send(e.message);
-    }
+    res.status(200).send(user);
   }
 
-  private async create(req: Request, res: Response) {
-    try {
-      const newUser = req.body.user;
+  @Post('/')
+  async create(req: Request, res: Response) {
+    const newUser = req.body.user;
 
-      await this.service.create(newUser);
+    await this.service.create(newUser);
 
-      res.sendStatus(201);
-    } catch (e) {
-      res.status(404).send(e.message);
-    }
+    res.sendStatus(201);
   }
 
-  private async update(req: Request, res: Response) {
-    try {
-      const newUser = req.body.user;
+  @Put('/')
+  async update(req: Request, res: Response) {
+    const newUser = req.body.user;
 
-      await this.service.update(newUser);
+    await this.service.update(newUser);
 
-      res.sendStatus(201);
-    } catch (e) {
-      res.status(404).send(e.message);
-    }
+    res.sendStatus(201);
   }
 
-  private async delete(req: Request, res: Response) {
+  @Delete('/:id')
+  async delete(req: Request, res: Response) {
     const id = parseInt(req.params.id, 10);
 
-    try {
-      await this.service.delete(id);
+    await this.service.delete(id);
 
-      res.sendStatus(200);
-    } catch (e) {
-      res.status(404).send(e.message);
-    }
+    res.sendStatus(200);
   }
 }

@@ -6,6 +6,7 @@ import 'reflect-metadata';
 import { UserTask } from './domains/UserTask/UserTask.model';
 import { Subject } from './domains/Subject/Subject.model';
 import { Task } from './domains/Task/Task.model';
+import { SubjectController } from './domains/Subject/Subject.controller';
 
 (async () => {
   const connection = await createConnection({
@@ -26,5 +27,9 @@ new Server([
   {
     path: '/users',
     routeController: new UserController()
+  },
+  {
+    path: '/subjects',
+    routeController: new SubjectController()
   }
 ]).start();

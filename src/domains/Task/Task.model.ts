@@ -22,6 +22,9 @@ export class Task {
   @Column()
   estimatedTime: number;
 
+  @Column({ nullable: true })
+  subjectId: number;
+
   @ManyToOne(
     type => Subject,
     subject => subject.tasks

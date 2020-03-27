@@ -15,7 +15,7 @@ export class SubjectController extends RouteController<SubjectService> {
     res.status(200).send(subjects);
   }
 
-  @Get('/getById')
+  @Get('/:id')
   async getById(req: Request, res: Response) {
     const id = parseInt(req.params.id, 10);
 
@@ -26,7 +26,7 @@ export class SubjectController extends RouteController<SubjectService> {
 
   @Post('/')
   async create(req: Request, res: Response) {
-    const newUser = req.body.user;
+    const newUser = req.body.subject;
 
     await this.service.create(newUser);
 
@@ -35,9 +35,9 @@ export class SubjectController extends RouteController<SubjectService> {
 
   @Put('/')
   async update(req: Request, res: Response) {
-    const newUser = req.body.user;
+    const newUser = req.body.subject;
 
-    await this.service.create(newUser);
+    await this.service.update(newUser);
 
     res.sendStatus(201);
   }

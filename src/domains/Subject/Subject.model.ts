@@ -15,8 +15,8 @@ export class Subject {
   @OneToMany(
     type => Task,
     task => task.subject, {
-      cascade: true
-    }
+    cascade: true
+  }
   )
   tasks: Task[];
 }

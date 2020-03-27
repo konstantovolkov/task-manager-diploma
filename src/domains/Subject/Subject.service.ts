@@ -24,31 +24,24 @@ export class SubjectService implements Service<Subject> {
     return await getRepository(Subject).save(newSubject);
   }
 
-  async update(subject: Subject): Promise<Subject> {
+  async update({ id, description, title }: Subject): Promise<Subject> {
     const subjectRepository = getRepository(Subject);
+    const updatedSubject = await this.getById(id);
 
-    const oldSubject = await subjectRepository.findOne(subject.id);
-    if (oldSubject) {
-      const { title, description } = oldSubject;
-      const updatedSubject = new Subject();
+    updatedSubject.description = description;
+    updatedSubject.title = title;
 
-      updatedSubject.title = title;
-      updatedSubject.description = description;
-
-      return await subjectRepository.save(updatedSubject);
-    }
-
-    throw new Error('Subject not found');
+    return await subjectRepository.save(updatedSubject);
   }
 
   async delete(id: number): Promise<void> {
-    const subjectRepository = getRepository(Subject);
-    const subject = subjectRepository.findOne(id);
+    const subject = await this.getById(id)
 
-    if (subject) {
-      await subjectRepository.delete(id);
-    }
+    getRepository(Subject).delete(subject.id);
 
-    throw new Error('Subject not found');
+  }
+
+  async exists(id: number): Promise<boolean> {
+    return !!await this.getById(id);
   }
 }

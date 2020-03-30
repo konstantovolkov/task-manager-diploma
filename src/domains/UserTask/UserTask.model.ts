@@ -10,11 +10,17 @@ export class UserTask {
   @Column()
   spentTime: number;
 
+  @Column()
+  taskId: number;
+
   @ManyToOne(
     type => Task,
     task => task.userTasks
   )
   task: Task;
+
+  @Column()
+  userId: number;
 
   @ManyToOne(
     type => User,

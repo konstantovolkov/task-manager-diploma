@@ -1,6 +1,8 @@
-import express, { Request, Response } from 'express';
-import { RouteController, Get, Post, Put, Delete, Controller } from '../Base/RouteController';
+import { Request, Response } from 'express';
+import { RouteController } from '../Base/RouteController';
 import { SubjectService } from './Subject.service';
+import { Controller } from '../../utils/decorators/controller';
+import { Get, Post, Put, Delete } from '../../utils/decorators/route';
 
 @Controller
 export class SubjectController extends RouteController<SubjectService> {

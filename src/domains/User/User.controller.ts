@@ -1,6 +1,8 @@
-import express, { Request, Response, Handler } from 'express';
+import { Request, Response} from 'express';
 import { UserService } from './User.service';
-import { RouteController, Controller, Get, Post, Put, Delete } from '../Base/RouteController';
+import { RouteController } from '../Base/RouteController';
+import { Controller } from '../../utils/decorators/controller';
+import { Get, Post, Put, Delete } from '../../utils/decorators/route';
 
 @Controller
 export class UserController extends RouteController<UserService> {

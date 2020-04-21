@@ -1,55 +1,60 @@
-import { Request, Response } from 'express';
-import { RouteController } from '../Base/RouteController';
 import { SubjectService } from './Subject.service';
-import { Controller } from '../../utils/decorators/controller';
-import { Get, Post, Put, Delete } from '../../utils/decorators/route';
+import { Body, Get, Post, Put, Delete, JsonController, OnUndefined,
+  HttpCode, QueryParams, QueryParam,} from "routing-controllers";
+import { Subject } from './Subject.model';
+import { Service } from 'typedi';
+import { IntParam } from '../../utils/decorators/IntParam';
+import { UserNotFoundError } from '../User/UserNotFoundError';
+import { SubscriptionFailedError } from './SubscriptionFailedError';
+import { SubjectNotFoundError } from './SubjectNotFoundError';
+import { updateEntityOptions } from '../../utils/updateEntityOptions';
+import { SubjectsListQuery } from './SubjectListQuery';
+import { createSubjectOptions } from './createSubjectOptions';
+import { getSubjectsOptions } from './getSubjectsOptions';
 
-@Controller
-export class SubjectController extends RouteController<SubjectService> {
-  init() {
-    this.service = new SubjectService();
-  }
+@Service()
+@JsonController('/subjects')
+export class SubjectController {
+  constructor(private service: SubjectService) {}
 
   @Get('/')
-  async getAll(req: Request, res: Response) {
-    const subjects = await this.service.getList();
-
-    res.status(200).send(subjects);
+  async getAll(
+    @QueryParams(getSubjectsOptions)
+    subjectsListQuery: SubjectsListQuery ) {
+    return await this.service.getList(subjectsListQuery);
   }
 
   @Get('/:id')
-  async getById(req: Request, res: Response) {
-    const id = parseInt(req.params.id, 10);
-
-    const user = await this.service.getById(id);
-
-    res.status(200).send(user);
+  @OnUndefined(SubjectNotFoundError)
+  async getById(@IntParam('id') id: number) {
+    return await this.service.getById(id);
   }
 
   @Post('/')
-  async create(req: Request, res: Response) {
-    const newUser = req.body.subject;
-
-    await this.service.create(newUser);
-
-    res.sendStatus(201);
+  @HttpCode(201)
+  @OnUndefined(UserNotFoundError)
+  async create(@Body() subject: Subject, @QueryParam('authorId', createSubjectOptions) authorId: number) {
+    return this.service.create(subject, authorId)
   }
 
-  @Put('/')
-  async update(req: Request, res: Response) {
-    const newUser = req.body.subject;
-
-    await this.service.update(newUser);
-
-    res.sendStatus(201);
+  @Put('/:id')
+  @HttpCode(201)
+  @OnUndefined(SubjectNotFoundError)
+  async update(@IntParam('id') id: number, @Body(updateEntityOptions) subject: Subject) {
+    return await this.service.update(id, subject);
   }
 
+  @Put('/:subjectId/subscribe/:userId')
+  @HttpCode(201)
+  @OnUndefined(SubscriptionFailedError)
+  async subscribe(@IntParam('subjectId') subjectId: number,
+    @IntParam('userId') userId: number ) {
+    return this.service.subscribe(subjectId, userId);
+  }
+  
   @Delete('/:id')
-  async delete(req: Request, res: Response) {
-    const id = parseInt(req.params.id, 10);
-
-    await this.service.delete(id);
-
-    res.sendStatus(201);
+  @OnUndefined(SubjectNotFoundError)
+  async delete(@IntParam('id') id: number) {
+    return this.service.delete(id);
   }
 }

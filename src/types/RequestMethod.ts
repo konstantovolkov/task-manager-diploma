@@ -1,1 +1,0 @@
-export type TRequestMethod = 'get' | 'post' | 'delete' | 'put';

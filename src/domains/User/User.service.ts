@@ -1,58 +1,39 @@
 import { User } from './User.model';
-import { getRepository } from 'typeorm';
+import { getRepository} from 'typeorm';
 import { Service } from '../Base/Service';
+import { UserType } from './UserType';
 
-export class UserService implements Service<User> {
-  public async getById(id: number): Promise<User> {
-    const user = await getRepository(User).findOne(id);
+export class UserService {
 
+  protected get userRepo() {
+    return getRepository(User);
+  }
+
+  public async getById(id: number) {
+    return await this.userRepo.findOne(id);
+  }
+
+  public async getList() {
+    return await this.userRepo.find();
+  }
+
+  public async create(user: User) {
+    return await this.userRepo.save(user);
+  }
+
+  public async update(id: number, user: User) {
+    const oldUser = await this.userRepo.findOne(id);
+
+    if (oldUser) {
+      const updatedUser: User = {...oldUser, ...user}
+      return await this.userRepo.save(updatedUser)
+    }
+  }
+
+  public async delete(id: number) {
+    const user = await this.getById(id)
     if (user) {
-      return user;
+      return await this.userRepo.remove(user);
     }
-
-    throw new Error('User not found');
-  }
-
-  public async getList(): Promise<User[]> {
-    return await getRepository(User).find();
-  }
-
-  public async create(user: User): Promise<User> {
-    const newUser = new User();
-
-    const { firstName, lastName, email, userType } = user;
-    newUser.email = email;
-    newUser.firstName = firstName;
-    newUser.lastName = lastName;
-    newUser.userType = userType;
-
-    return await getRepository(User).save(newUser);
-  }
-
-  public async update({ id, firstName, lastName, email, userType }: User): Promise<User> {
-    const userRepository = getRepository(User);
-
-    const updatedUser = await userRepository.findOne(id);
-    if (updatedUser) {
-      updatedUser.firstName = firstName;
-      updatedUser.lastName = lastName;
-      updatedUser.email = email;
-      updatedUser.userType = userType;
-
-      return await userRepository.save(updatedUser);
-    }
-
-    throw new Error('User not found');
-  }
-
-  public async delete(id: number): Promise<void> {
-    const userRepository = getRepository(User);
-    const user = userRepository.findOne(id);
-
-    if (user) {
-      await userRepository.delete(id);
-    }
-
-    throw new Error('User not found');
   }
 }

@@ -1,47 +1,92 @@
 import { Subject } from './Subject.model';
-import { Service } from '../Base/Service';
+
 import { getRepository } from 'typeorm';
+import { User } from '../User/User.model';
+import { UserTask } from '../UserTask/UserTask.model';
+import { Service } from 'typedi';
+import { Task } from '../Task/Task.model';
+import { TaskStatus } from '../UserTask/TaskStatus';
 
-export class SubjectService implements Service<Subject> {
-  async getById(id: number): Promise<Subject> {
-    const subject = await getRepository(Subject).findOne(id);
+interface AuthorQuery { authorId?: number };
+interface SubscriberQuery { subscriberId?: number }
 
-    if (subject) {
-      return subject;
+type SubjectQuery = AuthorQuery & SubscriberQuery;
+
+@Service()
+export class SubjectService {
+  private get subjectRepo() {
+    return getRepository(Subject);
+  }
+  
+  private get userRepo() {
+    return getRepository(User);
+  }
+  
+  private createTaskForUser(user: User) {
+    return (task: Task) => {
+      const userTask = new UserTask(task)
+        userTask.spentTime = 0;
+        userTask.status = TaskStatus.TODO;
+        user.userTasks.push(userTask);
+    }
+  }
+
+  async getById(id: number) {
+    return await this.subjectRepo.findOne(id);
+  }
+
+  async getList(query?: SubjectQuery): Promise<Subject[]> {
+    const queryBuilder = this.subjectRepo.createQueryBuilder('subject');
+   
+    if (query?.authorId) {
+      queryBuilder.where('subject.authorId = :id', { id: query.authorId });
     }
 
-    throw new Error('Subject not found');
-  }
-  async getList(): Promise<Subject[]> {
-    return await getRepository(Subject).find();
-  }
+    if (query?.subscriberId) {
+      queryBuilder.leftJoin('subject.subscribedUsers', 'user')
+      .where('user.id = :id', { id: query.subscriberId });
+    }
 
-  async create({ description, title }: Subject): Promise<Subject> {
-    const newSubject = new Subject();
-    newSubject.title = title;
-    newSubject.description = description;
-
-    return await getRepository(Subject).save(newSubject);
+    return queryBuilder.getMany()
   }
 
-  async update({ id, description, title }: Subject): Promise<Subject> {
-    const subjectRepository = getRepository(Subject);
-    const updatedSubject = await this.getById(id);
+  async create(subject: Subject, authorId: number) {
+    const author = await this.userRepo.findOne(authorId);
 
-    updatedSubject.description = description;
-    updatedSubject.title = title;
-
-    return await subjectRepository.save(updatedSubject);
+    if (author) {
+      subject.author = author;
+      return await this.subjectRepo.save(subject);
+    }
   }
 
-  async delete(id: number): Promise<void> {
-    const subject = await this.getById(id)
-
-    getRepository(Subject).delete(subject.id);
-
+  async update(id: number, subject: Subject) {
+    const oldSubject = await this.subjectRepo.findOne(id);
+    
+    if (oldSubject) {
+      const updatedSubject: Subject = {...oldSubject, ...subject};
+      return await this.subjectRepo.save(updatedSubject);
+    }
   }
 
-  async exists(id: number): Promise<boolean> {
-    return !!await this.getById(id);
+  async subscribe(id: number, userId: number) {
+    const subject = await this.subjectRepo.findOne(id, { relations: ['subscribedUsers', 'tasks']});
+    const user = await this.userRepo.findOne(userId, { relations: ['userTasks'] });
+    
+    if (subject && user) {
+      subject.tasks.forEach(this.createTaskForUser(user))
+
+      await this.userRepo.save(user)
+      subject.subscribedUsers.push(user)
+      return await this.subjectRepo.save(subject)
+    }
   }
+
+  async delete(id: number) {
+    const subject = await this.getById(id);
+
+    if (subject) {
+      return await this.subjectRepo.remove(subject)
+    }
+  }
+
 }

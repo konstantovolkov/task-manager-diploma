@@ -1,66 +1,64 @@
 import { Task } from './Task.model';
-import { Service } from '../Base/Service';
-import { getRepository } from 'typeorm';
+import { Service } from 'typedi';
+import { getRepository } from 'typeorm';;
 import { Subject } from '../Subject/Subject.model';
-import { SubjectService } from '../Subject/Subject.service';
 
-export class TaskService implements Service<Task> {
-  private subjectService: SubjectService;
-
-  constructor() {
-    this.subjectService = new SubjectService();
+@Service()
+export class TaskService {
+  private get taskRepo() {
+    return getRepository(Task);
   }
 
-  async getById(id: number): Promise<Task> {
-    const task = await getRepository(Task).findOne(id,
-      { relations: ['subject'] });
+  private get subjectRepo() {
+    return getRepository(Subject);
+  }
 
+  async getById(id: number, subjectId: number) {
+    const subject = await this.subjectRepo.findOne({ id: subjectId });
+
+    if (subject) {
+      return await this.taskRepo.findOneOrFail(id,
+        {
+          where: { subjectId: subject.id }
+        });
+    }
+  }
+
+  async getList(subjectId: number) {
+    const subject = await this.subjectRepo.findOne(subjectId, { relations: ['tasks'] });
+
+    return subject?.tasks
+  }
+
+  async create(task: Task, subjectId: number) {
+    const subject = await this.subjectRepo.findOne(subjectId, { relations: ['tasks'] });
+    
+    if (subject) {
+      subject.tasks.push(task);
+      await this.subjectRepo.save(subject)
+  
+      return task;
+    }
+  }
+
+  async update(id: number, task: Task, subjectId: number) {
+    const subject = await this.subjectRepo.findOne(subjectId);
+    const oldTask = await this.taskRepo.findOne(id, {
+      where: { subjectId: subjectId }
+    });
+
+    if (subject && oldTask) {
+      const newTask: Task = { ...oldTask, ...task }
+    
+      return this.taskRepo.save(newTask);
+    }
+  }
+
+  async delete(id: number, subjectId: number) {
+    const task = await this.getById(id, subjectId)
+    
     if (task) {
-      return task
+      return this.taskRepo.remove(task);
     }
-
-    throw new Error('Task not found');
-  }
-
-  async getList(): Promise<Task[]> {
-    return await getRepository(Task).find({ relations: ['subject'] })
-  }
-
-  async create({ description, title, estimatedTime, subjectId }: Task): Promise<Task> {
-    if (this.subjectService.exists(subjectId)) {
-      const newTask = new Task();
-      newTask.description = description;
-      newTask.estimatedTime = estimatedTime;
-      newTask.title = title;
-      newTask.subjectId = subjectId;
-
-      return await getRepository(Task).save(newTask);
-
-    }
-    throw new Error('Subject not found');
-  }
-
-  async update({ id, description, title, estimatedTime, subjectId }: Task): Promise<Task> {
-    const taskReposiory = getRepository(Task);
-
-    const updatedTask = await this.getById(id);
-    if (this.subjectService.exists(subjectId)) {
-      updatedTask.description = description;
-      updatedTask.estimatedTime = estimatedTime;
-      updatedTask.title = title;
-      updatedTask.subjectId = subjectId;
-    }
-
-    return taskReposiory.save(updatedTask)
-  }
-
-  async exists(id: number): Promise<boolean> {
-    return !!await getRepository(Task).findOne(id);
-  }
-
-  async delete(id: number): Promise<void> {
-    const task = await this.getById(id)
-
-    getRepository(Task).delete(task.id);
   }
 }

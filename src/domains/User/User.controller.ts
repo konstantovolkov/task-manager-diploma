@@ -1,55 +1,43 @@
-import { Request, Response} from 'express';
-import { UserService } from './User.service';
-import { RouteController } from '../Base/RouteController';
-import { Controller } from '../../utils/decorators/controller';
-import { Get, Post, Put, Delete } from '../../utils/decorators/route';
+import { UserService } from './User.service'
+import { Body, Get, Post, Put, Delete, JsonController, OnUndefined, HttpCode } from "routing-controllers";
+import { User } from './User.model';
+import { Service } from 'typedi';
+import { IntParam } from '../../utils/decorators/IntParam';
+import { UserNotFoundError } from './UserNotFoundError';
+import { updateEntityOptions } from '../../utils/updateEntityOptions';
 
-@Controller
-export class UserController extends RouteController<UserService> {
-  init() {
-    this.service = new UserService();
-  }
-
+@Service()
+@JsonController('/users')
+export class UserController {
+  constructor(private service: UserService) {}
+  
   @Get('/')
-  async getAll(req: Request, res: Response) {
-    const users = await this.service.getList();
-
-    res.status(200).send(users);
+  async getAll(): Promise<User[]> {
+    return await this.service.getList()
   }
 
   @Get('/:id')
-  async getById(req: Request, res: Response) {
-    const id = parseInt(req.params.id, 10);
-
-    const user = await this.service.getById(id);
-
-    res.status(200).send(user);
+  @OnUndefined(UserNotFoundError)
+  async getById(@IntParam('id') id: number) {
+    return await this.service.getById(id);
   }
 
   @Post('/')
-  async create(req: Request, res: Response) {
-    const newUser = req.body.user;
-
-    await this.service.create(newUser);
-
-    res.sendStatus(201);
+  @HttpCode(201)
+  async create(@Body() user: User) {
+    return await this.service.create(user);
   }
 
-  @Put('/')
-  async update(req: Request, res: Response) {
-    const newUser = req.body.user;
-
-    await this.service.update(newUser);
-
-    res.sendStatus(201);
+  @Put('/:id')
+  @HttpCode(201)
+  @OnUndefined(UserNotFoundError)
+  async update(@IntParam('id') id: number, @Body(updateEntityOptions) user: User) {
+    return await this.service.update(id, user);
   }
 
   @Delete('/:id')
-  async delete(req: Request, res: Response) {
-    const id = parseInt(req.params.id, 10);
-
-    await this.service.delete(id);
-
-    res.sendStatus(200);
+  @OnUndefined(UserNotFoundError)
+  async delete(@IntParam('id') id: number) {
+    return this.service.delete(id);
   }
 }

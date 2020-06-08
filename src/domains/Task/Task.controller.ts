@@ -1,5 +1,5 @@
 import { TaskService } from './Task.service';
-import { Get, Post, Put, Delete, JsonController, OnUndefined, HttpCode, Body } from 'routing-controllers';
+import { Get, Post, Put, Delete, JsonController, OnUndefined, HttpCode, Body, Authorized } from 'routing-controllers';
 import { Task } from './Task.model';
 import { Service } from 'typedi';
 import { IntParam } from '../../utils/decorators/IntParam';
@@ -7,6 +7,7 @@ import { TasksNotFoundError } from './TasksNotFoundError';
 import { TaskNotFoundError } from './TaskNotFoundError';
 import { updateEntityOptions } from '../../utils/updateEntityOptions';
 
+@Authorized()
 @Service()
 @JsonController('/subjects/:subjectId/tasks')
 export class TaskController {

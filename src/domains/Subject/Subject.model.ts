@@ -1,6 +1,14 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany, JoinTable, ManyToOne } from "typeorm";
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  ManyToMany,
+  JoinTable,
+  ManyToOne
+} from "typeorm";
 import { Task } from "../Task/Task.model";
-import { Exclude,  } from "class-transformer";
+import { Exclude } from "class-transformer";
 import { IsNotEmpty, IsString, IsInt } from "class-validator";
 import { User } from "../User/User.model";
 
@@ -20,26 +28,36 @@ export class Subject {
   @Column()
   description: string;
 
-  @ManyToMany(type => User, user => user.subjects, {
-    cascade: true
-  })
+  @ManyToMany(
+    type => User,
+    user => user.subjects,
+    {
+      cascade: true
+    }
+  )
   @JoinTable()
   subscribedUsers: User[];
 
   @Exclude({ toClassOnly: true })
   @Column()
-  authorId: number
+  authorId: number;
 
   @Exclude()
-  @ManyToOne(type => User, user => user.authoredSubjects, {
-    cascade: true
-  })
+  @ManyToOne(
+    type => User,
+    user => user.authoredSubjects,
+    {
+      cascade: true,
+      onDelete: "CASCADE"
+    }
+  )
   author: User;
 
   @Exclude()
   @OneToMany(
-    (type) => Task,
-    (task) => task.subject, {
+    type => Task,
+    task => task.subject,
+    {
       cascade: true
     }
   )

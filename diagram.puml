@@ -1,0 +1,175 @@
+@startuml
+class Subject <<entity>> {
+    +id: number
+    +title: string
+    +description: string
+    +subscribedUsers: User[]
+    +authorId: number
+    +author: User
+    +tasks: Task[]
+}
+class Task <<entity>> {
+    +id: number
+    +title: string
+    +description: string
+    +estimatedTime: number
+    +subject: Subject
+    +userTasks: UserTask[]
+}
+enum TaskStatus {
+    TODO
+    IN_PROGRESS
+    ON_REVIEW
+    DONE
+}
+class WorkingSession <<entity>> {
+    +id: number
+    +message: string
+    +createdAt: Date
+    +finishedAt: Date
+    +userTask: UserTask
+}
+class UserTask <<entity>> {
+    +id: number
+    +spentTime: number
+    +task: Task
+    +user: User
+    +workingSessions: WorkingSession[]
+    +status: TaskStatus
+}
+enum UserType {
+    STUDENT
+    MENTOR
+    ADMIN
+}
+class UserCredentials <<entity>> {
+    +id: number
+    +email: string
+    +password: string
+    +user: User
+}
+class User <<entity>> {
+    +id: number
+    +firstName: string
+    +lastName: string
+    +userType: UserType
+    +authoredSubjects: Subject[]
+    +subjects: Subject[]
+    +userTasks: UserTask[]
+    +credentials: UserCredentials
+}
+class AuthService <<utility>> {
+    #userRepo: Repository<User>
+    #credentialsRepo: Repository<UserCredentials>
+    -generateTokenForUser(user: User): string
+    -findCredentialsByEmail(email: string): Promise<UserCredentials | undefined>
+    +getTokenForUserCredentials(credentials: UserCredentials): Promise<string | undefined>
+    +signUp(user: User): Promise<string | undefined>
+}
+
+class AuthController <<boundary>> {
+    -service: AuthService
+    +login(credentials: UserCredentials): Promise<string | undefined>
+    +signUp(user: User): Promise<string | undefined>
+}
+
+class SubjectService <<utility>> {
+    -subjectRepo: Repository<Subject>
+    -userRepo: Repository<User>
+    -createTaskForUser(user: User): (task: Task) => void
+    +getById(id: number): Promise<Subject | undefined>
+    +getList(query?: SubjectQuery | undefined): Promise<Subject[]>
+    +create(subject: Subject, authorId: number): Promise<Subject | undefined>
+    +update(id: number, subject: Subject): Promise<Subject | undefined>
+    +subscribe(id: number, userId: number): Promise<Subject | undefined>
+    +delete(id: number): Promise<Subject | undefined>
+}
+class SubjectController <<boundary>> {
+    -service: SubjectService
+    +getAll(subjectsListQuery: SubjectsListQuery): Promise<Subject[]>
+    +getById(id: number): Promise<Subject | undefined>
+    +create(subject: Subject, authorId: number): Promise<Subject | undefined>
+    +update(id: number, subject: Subject): Promise<Subject | undefined>
+    +subscribe(subjectId: number, userId: number): Promise<Subject | undefined>
+    +delete(id: number): Promise<Subject | undefined>
+}
+class TaskService <<utility>> {
+    -taskRepo: Repository<Task>
+    -subjectRepo: Repository<Subject>
+    +getById(id: number, subjectId: number): Promise<Task | undefined>
+    +getList(subjectId: number): Promise<Task[] | undefined>
+    +create(task: Task, subjectId: number): Promise<Task | undefined>
+    +update(id: number, task: Task, subjectId: number): Promise<Task | undefined>
+    +delete(id: number, subjectId: number): Promise<Task | undefined>
+}
+class TaskController <<boundary>> {
+    -service: TaskService
+    +getAll(subjectId: number): Promise<Task[] | undefined>
+    +getById(subjectId: number, taskId: number): Promise<Task | undefined>
+    +create(task: Task, subjectId: number): Promise<Task | undefined>
+    +update(subjectId: number, task: Task, taskId: number): Promise<Task | undefined>
+    +delete(subjectId: number, taskId: number): Promise<Task | undefined>
+}
+class UserService <<utility>> {
+    #userRepo: Repository<User>
+    +getById(id: number): Promise<User | undefined>
+    +getList(): Promise<User[]>
+    +update(id: number, user: User): Promise<User | undefined>
+    +delete(id: number): Promise<User | undefined>
+}
+class UserController <<boundary>> {
+    -service: UserService
+    +getAll(): Promise<User[]>
+    +getById(id: number): Promise<User | undefined>
+    +update(id: number, user: User): Promise<User | undefined>
+    +delete(id: number): Promise<User | undefined>
+}
+class UserTaskService <<utility>> {
+    -taskRepo: Repository<Task>
+    -userTaskRepo: Repository<UserTask>
+    -userRepo: Repository<User>
+    -workingSessionRepo: Repository<WorkingSession>
+    +addWorkingSession(session: WorkingSession, taskId: number, userId: number): Promise<UserTask | undefined>
+    +getByTaskId(taskId: number, userId: number): Promise<UserTask | undefined>
+    +getList(userId: number): Promise<UserTask[] | undefined>
+    +updateByTaskId(taskId: number, userTask: UserTask, userId: number): Promise<UserTask | undefined>
+    +deleteTaskForUser(taskId: number, userId: number): Promise<void>
+}
+class UserTaskController <<boundary>> {
+    -service: UserTaskService
+    +getAll(userId: number): Promise<UserTask[] | undefined>
+    +getById(userId: number, taskId: number): Promise<UserTask | undefined>
+    +update(userId: number, userTask: UserTask, taskId: number): Promise<UserTask | undefined>
+    +delete(userId: number, taskId: number): Promise<void>
+    +addWorkingSession(session: WorkingSession, userId: number, taskId: number): Promise<UserTask | undefined>
+}
+
+AuthController *-- AuthService
+AuthService --> User
+AuthService --> UserCredentials
+UserCredentials *-- User
+
+TaskController *-- TaskService
+TaskService --> Task
+TaskService --> Subject
+Task *-- Subject
+Task o-- UserTask
+
+SubjectController *-- SubjectService
+SubjectService --> Subject
+SubjectService --> User
+Subject *-- User
+Subject o-- Task
+
+UserController *-- UserService
+UserService --> User
+User o-- UserTask
+User *-- UserCredentials
+
+UserTaskController *-- UserTaskService
+UserTaskService --> UserTask
+UserTask o-- WorkingSession
+UserTask *-- User
+WorkingSession *-- UserTask
+
+@enduml

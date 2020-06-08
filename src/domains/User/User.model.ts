@@ -1,9 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, BaseEntity, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, BaseEntity, ManyToMany, JoinTable, OneToOne } from 'typeorm';
 import { UserTask } from '../UserTask/UserTask.model';
-import { IsString, IsEmail, IsInt, IsNotEmpty, IsEnum } from 'class-validator';
-import { Exclude } from 'class-transformer';
+import { IsString, IsEmail, IsInt, IsNotEmpty, IsEnum, ValidateNested } from 'class-validator';
+import { Exclude, Expose, TransformClassToPlain } from 'class-transformer';
 import { Subject } from '../Subject/Subject.model';
 import { UserType } from './UserType';
+import { UserCredentials } from '../Auth/UserCredentials.model';
 
 @Entity()
 export class User {
@@ -20,11 +21,6 @@ export class User {
   @IsString()
   @Column()
   lastName: string;
-
-  @IsNotEmpty()
-  @IsEmail()
-  @Column()
-  email: string;
 
   @IsNotEmpty()
   @IsEnum(UserType)
@@ -51,4 +47,10 @@ export class User {
     }
   )
   userTasks: UserTask[];
+
+  @ValidateNested()
+  @OneToOne(type => UserCredentials, credentials => credentials.user, {
+    cascade: true
+  })
+  credentials: UserCredentials;
 }

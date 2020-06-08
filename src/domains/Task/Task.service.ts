@@ -2,11 +2,17 @@ import { Task } from './Task.model';
 import { Service } from 'typedi';
 import { getRepository } from 'typeorm';;
 import { Subject } from '../Subject/Subject.model';
+import { User } from '../User/User.model';
+import { UserTask } from '../UserTask/UserTask.model';
 
 @Service()
 export class TaskService {
   private get taskRepo() {
     return getRepository(Task);
+  }
+
+  private get userRepo() {
+    return getRepository(User);
   }
 
   private get subjectRepo() {
@@ -31,9 +37,27 @@ export class TaskService {
   }
 
   async create(task: Task, subjectId: number) {
-    const subject = await this.subjectRepo.findOne(subjectId, { relations: ['tasks'] });
+    const subject = await this.subjectRepo.findOne(subjectId, { relations: ['tasks',] });
     
     if (subject) {
+      const users = await this.userRepo.find({
+        join: {
+          alias: 'user',
+          innerJoinAndSelect: {
+            userTasks: 'user.userTasks',
+            subjects: 'user.subjects'
+          }
+        },
+        where: {
+          subjectId: subjectId
+        }
+      })
+
+      users?.forEach(user => {
+        user.userTasks.push(new UserTask(task))
+        this.userRepo.save(user)
+      })
+
       subject.tasks.push(task);
       await this.subjectRepo.save(subject)
   

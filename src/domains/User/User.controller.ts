@@ -1,11 +1,13 @@
 import { UserService } from './User.service'
-import { Body, Get, Post, Put, Delete, JsonController, OnUndefined, HttpCode } from "routing-controllers";
+import { Body, Get, Post, Put, Delete, JsonController, OnUndefined, HttpCode, Authorized, CurrentUser } from "routing-controllers";
 import { User } from './User.model';
 import { Service } from 'typedi';
 import { IntParam } from '../../utils/decorators/IntParam';
 import { UserNotFoundError } from './UserNotFoundError';
 import { updateEntityOptions } from '../../utils/updateEntityOptions';
+import { UserType } from './UserType';
 
+@Authorized()
 @Service()
 @JsonController('/users')
 export class UserController {
@@ -17,15 +19,10 @@ export class UserController {
   }
 
   @Get('/:id')
+  @Authorized()
   @OnUndefined(UserNotFoundError)
   async getById(@IntParam('id') id: number) {
     return await this.service.getById(id);
-  }
-
-  @Post('/')
-  @HttpCode(201)
-  async create(@Body() user: User) {
-    return await this.service.create(user);
   }
 
   @Put('/:id')
@@ -38,6 +35,6 @@ export class UserController {
   @Delete('/:id')
   @OnUndefined(UserNotFoundError)
   async delete(@IntParam('id') id: number) {
-    return this.service.delete(id);
+    return await this.service.delete(id);
   }
 }

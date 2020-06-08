@@ -4,11 +4,17 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   OneToMany
-} from 'typeorm';
-import { Subject } from '../Subject/Subject.model';
-import { UserTask } from '../UserTask/UserTask.model';
-import { Exclude } from 'class-transformer';
-import { IsNotEmpty, IsString, IsDateString, IsNumber, IsInt } from 'class-validator';
+} from "typeorm";
+import { Subject } from "../Subject/Subject.model";
+import { UserTask } from "../UserTask/UserTask.model";
+import { Exclude } from "class-transformer";
+import {
+  IsNotEmpty,
+  IsString,
+  IsDateString,
+  IsNumber,
+  IsInt
+} from "class-validator";
 
 @Entity()
 export class Task {
@@ -33,7 +39,10 @@ export class Task {
   @Exclude()
   @ManyToOne(
     type => Subject,
-    subject => subject.tasks
+    subject => subject.tasks,
+    {
+      onDelete: "CASCADE"
+    }
   )
   subject: Subject;
 

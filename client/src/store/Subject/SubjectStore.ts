@@ -13,19 +13,19 @@ export class SubjectStore {
       id: 0,
       title: "Mathematics",
       description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        "The abstract science of number, quantity, and space, either as abstract concepts, or as applied to other disciplines such as physics and engineering "
     },
     {
       id: 1,
       title: "Progrimming",
       description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        "Computer programming is the process of designing and building an executable computer program to accomplish a specific computing result."
     },
     {
       id: 2,
-      title: "Doing nothing!",
+      title: "English",
       description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        "English is a West Germanic language that was first spoken in early medieval England and eventually became a global lingua franca."
     }
   ];
   @observable currentSubjectId: number = this.subjects[0].id;

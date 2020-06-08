@@ -42,44 +42,71 @@ export class StudentTask {
 export class StudentTaskStore {
   @observable studentTasks: StudentTask[] = [
     {
+      id: 0,
+      status: TaskStatus.TODO,
+      workingSessions: [],
+      task: {
+        id: 0,
+        title: "Write programm",
+        description: "Create 'Hellow world' programm using Pascal",
+        estimatedTime: 120000,
+        subjectId: 1,
+        due: new Date()
+      }
+    },
+    {
+      id: 5,
+      status: TaskStatus.TODO,
+      workingSessions: [],
+      task: {
+        id: 5,
+        title: "Learn basics of JavaScript",
+        description:
+          "Learn basics of JavaScript. You can use this resource https://learn.javascript.ru/",
+        estimatedTime: 2000000000,
+        subjectId: 1,
+        due: new Date()
+      }
+    },
+    {
       id: 1,
       status: TaskStatus.TODO,
       workingSessions: [],
       task: {
         id: 1,
-        title: "Calculate 2 + 2",
+        title: "Differential equations",
         description:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        estimatedTime: 120000,
+        estimatedTime: 12000000,
         subjectId: 0,
         due: new Date()
       }
     },
     {
       id: 2,
-      status: TaskStatus.DONE,
+      status: TaskStatus.TODO,
       workingSessions: [],
       task: {
-        id: 1,
-        title: "Calculate 1 + 2",
+        id: 2,
+        title: "Complex numbers",
         description:
           "Lorem ipsum dolor sit amet, consectetur Lorem ipsum dolor sit amet, consectetur adipiscing elit, adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        estimatedTime: 646346,
+        estimatedTime: 64126346,
         subjectId: 0,
         due: new Date()
       }
     },
     {
       id: 3,
-      status: TaskStatus.DONE,
+      status: TaskStatus.ON_REVIEW,
       workingSessions: [],
       task: {
-        id: 1,
-        title: "Calculate 2 + 3",
+        id: 3,
+        title: "Square equations",
         description:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        estimatedTime: 646346,
-        subjectId: 1,
+        estimatedTime: 646341236,
+        subjectId: 0,
         due: new Date()
       }
     },
@@ -91,22 +118,21 @@ export class StudentTaskStore {
           id: 0,
           createdAt: new Date(100000),
           finishedAt: new Date(200000),
-          message:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
+          message: "Calculated 2 + 2"
         },
         {
           id: 1,
           createdAt: new Date(100000),
           finishedAt: new Date(300000),
-          message: "eiusmod tempor incididunt ut labore et dolore magna aliqua"
+          message: "Calculated 2 * 10"
         }
       ],
       task: {
-        id: 1,
-        title: "Calculate everything",
+        id: 4,
+        title: "Calculate something",
         description:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor Lorem ipsum dolor sit amet, consectetur adipiscing elit, incididunt ut labore et dolore magna aliqua.",
-        estimatedTime: 20 * 60 * 1000,
+        estimatedTime: 20 * 60 * 100000,
         subjectId: 0,
         due: new Date()
       }

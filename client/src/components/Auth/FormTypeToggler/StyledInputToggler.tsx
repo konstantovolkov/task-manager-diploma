@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const getColor = (checked: string, notChecked: string) => (props: {
   checked: boolean;
@@ -7,10 +7,13 @@ const getColor = (checked: string, notChecked: string) => (props: {
 export const StyledInputToggler = styled.label`
   flex-grow: 1;
   flex-basis: 0;
-  background-color: ${getColor('white', '#e1e8e7')};
-  color: ${getColor('#575c5b', '#6f7a78')};
+  background-color: ${getColor("white", "rgb(240, 0, 52, 0.1);")};
+  color: ${getColor("#575c5b", "#6f7a78")};
   & > input {
     display: none;
+  }
+  &:hover {
+    cursor: pointer;
   }
 
   display: flex;

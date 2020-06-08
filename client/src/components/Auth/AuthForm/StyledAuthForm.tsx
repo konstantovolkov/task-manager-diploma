@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const StyledAuthForm = styled.form`
   background-color: white;
@@ -6,7 +6,7 @@ export const StyledAuthForm = styled.form`
   flex-direction: column;
   width: 400px;
   border-radius: 5px;
-  font-family: Segoe UI, Frutiger, Frutiger Linotype, Dejavu Sans,
-    Helvetica Neue, Arial, sans-serif;
+  font-family: Segoe UI, Frutiger, Frutiger Linotype, Dejavu Sans, Helvetica Neue,
+    Arial, sans-serif;
   font-size: 13px;
 `;

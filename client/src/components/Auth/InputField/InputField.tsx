@@ -1,7 +1,7 @@
-import React from 'react';
-import { InputContainer } from './InputContainer';
-import { IFieldProps } from '../../types/IFieldProps';
-import { InputAlert } from './InputAlert';
+import React from "react";
+import { InputContainer } from "./InputContainer";
+import { IFieldProps } from "../../../types/IFieldProps";
+import { InputAlert } from "./InputAlert";
 
 export const InputField: React.FC<IFieldProps> = ({
   type,

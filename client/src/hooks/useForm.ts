@@ -1,13 +1,7 @@
-import {
-  useState,
-  ChangeEvent,
-  FormEvent,
-  useEffect,
-  useCallback
-} from 'react';
-import { IFormState } from '../types/IFormState';
-import { IFormSubmitAction } from '../types/IFormSubmitAction';
-import { IValidator } from '../types/TFormTypesRecord';
+import { useState, ChangeEvent, FormEvent, useEffect, useCallback } from "react";
+import { IFormState } from "../types/IFormState";
+import { IFormSubmitAction } from "../types/IFormSubmitAction";
+import { IValidator } from "../types/TFormTypesRecord";
 
 export const useForm = (
   inputNames: string[],
@@ -51,15 +45,19 @@ export const useForm = (
       formSubmitHandler(inputs);
     }
     setSubmit(false);
-  }, [errors])
-
+  }, [errors]);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     setInputs(inputs => ({
       ...inputs,
-      ...Object.assign({}, ...inputNames.filter(inputName => !inputs[inputName]).map(inputName => ({ [inputName]: '' })))
+      ...Object.assign(
+        {},
+        ...inputNames
+          .filter(inputName => !inputs[inputName])
+          .map(inputName => ({ [inputName]: "" }))
+      )
     }));
     setSubmit(true);
   };
